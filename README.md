@@ -10,4 +10,6 @@ Créez le serveur sur un PC tiers ainsi qu'une application sur un PC qui permett
 
 Le PC RS232 enverra deux trames :
  - "$TRACQ1,x.x,y.y,*"
- - "$TRACQ2,x.x,y.y,z.z,*"
+ - "$TRACQ2,a.a,b.b,c.c,*"
+
+Le PC en réseau recevra une image en .ppm et une trame au format "$TRACQ,x.x,y.y,a.a,b.b,c.c,*"

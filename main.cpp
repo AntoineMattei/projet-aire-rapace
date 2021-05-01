@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     // On recherche les différentes interfaces RS232
 
-/*
+
     foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         qDebug() << "Available ports :";
         qDebug() << "Name            : " << info.portName();
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
     if(serial_USB0->isOpen()){
         serial_USB0->close();
     }
-*/
+
     // -------------------------------------------
     ssd1306 ecran;
 
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
     //Capteurs(double co_vitesseVent, double co_poidsAir, double co_luminosite, double co_temperature, double co_humidite);
     Capteurs capteur(vitesseVent,poidsAire,luminosite,temperature,humidite);
 
-    //ecran.ecrireValeurEcran(int typeCapteur, Capteurs capteur, ssd1306 ecran)
+    //ecran.ecrireValeurEcran(int typeCapteur, Capteurs capteur, ssd1306 ecran);
 
     ecran.ecrireValeurEcran(Capteurs::VitesseVent, capteur);
 
@@ -212,12 +212,12 @@ int main(int argc, char *argv[])
     // -----------------------------------------------
     // --------------------SOCKET---------------------
     // -----------------------------------------------
-/*
+
     QTcpSocket socket;
 
     // ------------------- Image ---------------------
     socket.connectToHost(addr_Serveur,4242);
-
+    
     socket.waitForConnected();
 
     if(socket.state() != QAbstractSocket::ConnectedState){
@@ -282,7 +282,6 @@ int main(int argc, char *argv[])
         socket.waitForDisconnected();
     }
 
-    */
     qDebug() << "Fin du programme";
     return 0;
 }

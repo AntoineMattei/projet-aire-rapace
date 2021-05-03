@@ -34,19 +34,10 @@ int main(int argc, char *argv[])
 
 
     printf("Heure :\n");
-
-    QDateTime date_time;
-
-    QString date_heure = date_time.currentDateTime().toString("dddd dd MMMM yyyy");
-    QString dateHeureToSend = date_time.currentDateTime().toString("dd.MM.yy,hh:mm:ss");
-    QString heure = date_time.currentDateTime().toString("hh");
-    QString minutes = date_time.currentDateTime().toString("mm");
-    QString secondes = date_time.currentDateTime().toString("ss");
-    QString millisecondes = date_time.currentDateTime().toString("zzz");
-    cout << "Nous sommes le " << date_heure.toStdString()
-         << ". Il est " << heure.toStdString() << "h " << minutes.toStdString() << "min "
-         << secondes.toStdString() << "s " << millisecondes.toStdString() << "ms"
-         << endl;
+    QDateTime dateHeure;
+    QString dateHeureString("Nous sommes le " + dateHeure.currentDateTime().toString("dddd dd MMMM yyyy") +
+                            ". Il est " + dateHeure.currentDateTime().toString("hh:mm:ss"));
+    QString dateHeureToSend = date_time.currentDateTime().toString("dd.MM.yy,hh:mm:ss");    
 
     //--------- Début Caméra -------------
     RaspiCam Camera;    // Camera object

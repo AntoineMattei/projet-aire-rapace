@@ -21,8 +21,6 @@ using namespace std;
 using namespace raspicam;
 QT_USE_NAMESPACE
 
-#define addr_Serveur "192.168.0.25"
-
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -34,10 +32,19 @@ int main(int argc, char *argv[])
 
 
     printf("Heure :\n");
-    QDateTime dateHeure;
-    QString dateHeureString("Nous sommes le " + dateHeure.currentDateTime().toString("dddd dd MMMM yyyy") +
-                            ". Il est " + dateHeure.currentDateTime().toString("hh:mm:ss"));
-    QString dateHeureToSend = date_time.currentDateTime().toString("dd.MM.yy,hh:mm:ss");    
+
+    QDateTime date_time;
+
+    QString date_heure = date_time.currentDateTime().toString("dddd dd MMMM yyyy");
+    QString dateHeureToSend = date_time.currentDateTime().toString("dd.MM.yy,hh:mm:ss");
+    QString heure = date_time.currentDateTime().toString("hh");
+    QString minutes = date_time.currentDateTime().toString("mm");
+    QString secondes = date_time.currentDateTime().toString("ss");
+    QString millisecondes = date_time.currentDateTime().toString("zzz");
+    cout << "Nous sommes le " << date_heure.toStdString()
+         << ". Il est " << heure.toStdString() << "h " << minutes.toStdString() << "min "
+         << secondes.toStdString() << "s " << millisecondes.toStdString() << "ms"
+         << endl;
 
     //--------- Début Caméra -------------
     RaspiCam Camera;    // Camera object
@@ -140,13 +147,6 @@ int main(int argc, char *argv[])
     // -------------------------------------------
     ssd1306 ecran;
 
-    double vitesseVent, poidsAire, luminosite, temperature, humidite;
-    vitesseVent = aleatoire.bounded(100.00);
-    poidsAire =   aleatoire.bounded(100.00);
-    luminosite =  aleatoire.bounded(100.00);
-    temperature = aleatoire.bounded(100.00);
-    humidite =    aleatoire.bounded(100.00);
-
     // Ecran :
     ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS);
 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
     //Capteurs(double co_vitesseVent, double co_poidsAir, double co_luminosite, double co_temperature, double co_humidite);
     Capteurs capteur(vitesseVent,poidsAire,luminosite,temperature,humidite);
 
-    //ecran.ecrireValeurEcran(int typeCapteur, Capteurs capteur, ssd1306 ecran);
+    //ecran.ecrireValeurEcran(int typeCapteur, Capteurs capteur, ssd1306 ecran)
 
     ecran.ecrireValeurEcran(Capteurs::VitesseVent, capteur);
 
@@ -204,11 +204,15 @@ int main(int argc, char *argv[])
     // --------------------SOCKET---------------------
     // -----------------------------------------------
 
+    QString addr_Serveur;
+    string addr_Serveur_String;
+    cin >> addr_Serveur_String;
+    addr_Serveur.fromStdString(addr_Serveur_String);
     QTcpSocket socket;
 
     // ------------------- Image ---------------------
     socket.connectToHost(addr_Serveur,4242);
-    
+
     socket.waitForConnected();
 
     if(socket.state() != QAbstractSocket::ConnectedState){

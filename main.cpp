@@ -37,14 +37,12 @@ int main(int argc, char *argv[])
 
     QString date_heure = date_time.currentDateTime().toString("dddd dd MMMM yyyy");
     QString dateHeureToSend = date_time.currentDateTime().toString("dd.MM.yy,hh:mm:ss");
-    QString heure = date_time.currentDateTime().toString("hh");
-    QString minutes = date_time.currentDateTime().toString("mm");
-    QString secondes = date_time.currentDateTime().toString("ss");
-    QString millisecondes = date_time.currentDateTime().toString("zzz");
-    cout << "Nous sommes le " << date_heure.toStdString()
-         << ". Il est " << heure.toStdString() << "h " << minutes.toStdString() << "min "
-         << secondes.toStdString() << "s " << millisecondes.toStdString() << "ms"
-         << endl;
+
+    cout << "Nous sommes le " << date_time.currentDateTime().toString("dddd dd MMMM yyyy").toStdString()
+         << ". Il est " << date_time.currentDateTime().toString("hh").toStdString()
+         << "h " << date_time.currentDateTime().toString("mm").toStdString() << "min"
+         << date_time.currentDateTime().toString("ss").toStdString() << "secondes"
+         << date_time.currentDateTime().toString("zzz").toStdString() << "ms" << endl;
 
     //--------- Début Caméra -------------
     RaspiCam Camera;    // Camera object
@@ -160,10 +158,7 @@ int main(int argc, char *argv[])
 
     // ************ Premier écran *************
 
-    //Capteurs(double co_vitesseVent, double co_poidsAir, double co_luminosite, double co_temperature, double co_humidite);
     Capteurs capteur(vitesseVent,poidsAire,luminosite,temperature,humidite);
-
-    //ecran.ecrireValeurEcran(int typeCapteur, Capteurs capteur, ssd1306 ecran)
 
     ecran.ecrireValeurEcran(Capteurs::VitesseVent, capteur);
 

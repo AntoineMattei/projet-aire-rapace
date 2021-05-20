@@ -16,6 +16,8 @@ Le PC RS232 enverra deux trames :
 
 Le PC en réseau recevra une image en .ppm et une trame au format "$TRACQ,x.x,y.y,a.a,b.b,c.c,*"
 
+***
+
 # Aire Rapace Project
 Aire Rapace Project done at Jean Perrin high schoo in Marseille (France) during the second year of the Higher Technician's Certificate in Digital System, Computer and Network Option.
 

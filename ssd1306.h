@@ -1,3 +1,5 @@
+/** \file ssd1306.h
+ */
 /*********************************************************************
 SSD1306 I2C C++ Class Library for Raspberry Pi.
 Based on Adafruit SSD1306 Arduino library. Some functions came from Adafruit GFX lib.
@@ -137,41 +139,21 @@ All text above, and the splash screen must be included in any redistribution
 #include "capteurs.h"
 
 /*!
- * \file ssd1306.cpp ssd1306.h
- *
- * \mainpage C++ library for monochrome OLEDs based on SSD1306 drivers.
- *
  * \class ssd1306 ssd1306.h "ssd1306.h"
  * \brief The ssd1306 class
  *
- * \section intro_sec Introduction
+ * \details Cette classe permet de gérer un écran OLED I2C de type ssd1306.
  *
- * This is documentation for Adafruit's SSD1306 library for monochrome
- * OLED displays: http://www.adafruit.com/category/63_98
+ * \details Initialement écrite pour Arduino, elle a été réécrite pour Raspberry Pi en C puis de nouveau modifiée pour en faire une classe C++ toujours pour Raspberry Pi.
  *
- * These displays use I2C or SPI to communicate. I2C requires 2 pins
- * (SCL+SDA) and optionally a RESET pin. SPI requires 4 pins (MOSI, SCK,
- * select, data/command) and optionally a reset pin. Hardware SPI or
- * 'bitbang' software SPI are both supported.
- *
- * Adafruit invests time and resources providing this open source code,
- * please support Adafruit and open-source hardware by purchasing
- * products from Adafruit!
- *
- * \section author Author
- *
- * \author Limor Fried    : Arduino lib for Adafruit Industries
- * \author Ladyada        : Arduino lib for Adafruit Industries
- * \author Ilia Penev     : C lib
- * \author Antoine Mattei : C++ lib
+ * \author Limor Fried / Ladyada   : Arduino lib for Adafruit Industries
+ * \author Ilia Penev              : C lib
+ * \author Antoine Mattei          : C++ lib & Documentation
  * \version 3.0
  * \date 2021
- *
- * \section license License
- *
- * \copyright BSD license, all text above, and the splash screen included below, must be included in any redistribution.
- *
+ * \copyright BSD license
  */
+
 class ssd1306
 {
 private:
@@ -321,10 +303,12 @@ private:
 
 public:
     /*!
-     * \brief ssd1306
-     */
+        @brief  Constructor for I2C-interfaced SSD1306 displays.
+        @return Adafruit_SSD1306 object.
+        @note   Call the object's begin() function before use -- buffer
+                allocation is performed there!
+    */
     ssd1306();
-
     /*!
         @brief  Allocate RAM for image buffer, initialize peripherals and pins.
         @param  vccstate
@@ -338,25 +322,32 @@ public:
                 SPI displays (hardware or software) do not use addresses, but
                 this argument is still required (pass 0 or any value really,
                 it will simply be ignored). Default if unspecified is 0.
-
-        @return None (void).
-
-        @details See the following example:
-        @code{.cpp}
-                ssd1306 ecran;
-                ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC(0x2)
-        @endcode
-
+        @return None (void)
         @note   MUST call this function before any drawing or updates!
+        @code{.cpp}
+        #include "ssd1306.h"
+
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+
+            // Le logo Adafruit s'affiche
+            return 0;
+        }
+        @endcode
     */
     void begin(unsigned int vccstate, unsigned int i2caddr);
 
     /*!
-        \brief  Issue a single low-level command directly to the SSD1306
+        @brief  Issue a single low-level command directly to the SSD1306
                 display, bypassing the library.
-        \param  c
+
+        @details A public version of ssd1306_command1(), for existing user code that might rely on that function. This encapsulates the command transfer in a transaction start/end, similar to old library's handling of it.
+
+        @param  c
                 Command to issue (0x00 to 0xFF, see datasheet).
-        \return None (void).
+        @return None (void).
     */
     void command(unsigned int c);
 
@@ -366,13 +357,28 @@ public:
         @note   Changes buffer contents only, no immediate effect on display.
                 Follow up with a call to display(), or with other graphics
                 commands as needed by one's own application.
+        @code{.cpp}
+        #include "ssd1306.h"
+
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+            usleep(5000);
+            ecran.clearDisplay();
+            usleep(5000); // On laisse du temps pour que l'écran s'éteigne.
+
+            // Le logo Adafruit s'affiche puis s'enlève.
+            return 0;
+        }
+        @endcode
     */
     void clearDisplay(void);
     /*!
         @brief  Enable or disable display invert mode (white-on-black vs
                 black-on-white).
         @param  i
-                If true, switch to invert mode (black-on-white), else normal
+                If i = 1, switch to invert mode (black-on-white), else normal
                 mode (white-on-black).
         @return None (void).
         @note   This has an immediate effect on the display, no need to call the
@@ -381,19 +387,26 @@ public:
                 enabled, drawing SSD1306_BLACK (value 0) pixels will actually draw
                 white, SSD1306_WHITE (value 1) will draw black.
     */
-    void invertDisplay(bool i);
+    void invertDisplay(unsigned int i);
     /*!
-     * @brief  Push data currently in RAM to SSD1306 display.
-       @return None (void).
-       @note   Drawing operations are not visible until this function is
-               called. Call after each graphics command, or after a whole set
-               of graphics commands, as best needed by one's own application.
-     * \code{.cpp}
-     * ssd1306 ecran;
-     * ecran.ecrireValeurEcran(Capteurs::Temperature, capteur);
-     * ecran.display();
-     * \endcode
-     */
+        @brief  Push data currently in RAM to SSD1306 display.
+        @return None (void).
+        @note   Drawing operations are not visible until this function is
+                called. Call after each graphics command, or after a whole set
+                of graphics commands, as best needed by one's own application.
+        @code{.cpp}
+        #include "ssd1306.h"
+
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+
+            // Le logo Adafruit s'affiche
+            return 0;
+        }
+        @endcode
+    */
     void display();
 
     /*!
@@ -403,13 +416,21 @@ public:
         @param  stop
                 Last row.
         @return None (void).
+        @note   To scroll the whole display, run:
+        @code{.cpp}
+        #include "ssd1306.h"
 
-        \details Hint, the display is 16 rows tall. To scroll the whole display, run:
-        \code{.cpp}
-        ssd1306 ecran;
-        ecran.startscrollright(0x00, 0x0F);
-        \endcode
-     */
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+            ecran.startscrollright(0x00, 0x0F);
+            ecran.display();
+
+            return 0;
+        }
+        @endcode
+    */
     void startscrollright(unsigned int start, unsigned int stop);
     /*!
         @brief  Activate a left-handed scroll for all or part of the display.
@@ -418,10 +439,19 @@ public:
         @param  stop
                 Last row.
         @return None (void).
-        @details Hint, the display is 16 rows tall. To scroll the whole display, run:
+        @note   To scroll the whole display, run:
         @code{.cpp}
-        ssd1306 ecran;
-        ecran.startscrollleft(0x00, 0x0F)
+        #include "ssd1306.h"
+
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+            ecran.startscrollleft(0x00, 0x0F);
+            ecran.display();
+
+            return 0;
+        }
         @endcode
     */
     void startscrollleft(unsigned int start, unsigned int stop);
@@ -433,10 +463,19 @@ public:
         @param  stop
                 Last row.
         @return None (void).
-        @details Hint, the display is 16 rows tall. To scroll the whole display, run:
+        @note   To scroll the whole display, run:
         @code{.cpp}
-        ssd1306 ecran;
-        ecran.startscrolldiagright(0x00, 0x0F);
+        #include "ssd1306.h"
+
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+            ecran.startscrolldiagright(0x00, 0x0F);
+            ecran.display();
+
+            return 0;
+        }
         @endcode
     */
     void startscrolldiagright(unsigned int start, unsigned int stop);
@@ -447,10 +486,19 @@ public:
         @param  stop
                 Last row.
         @return None (void).
-        @details Hint, the display is 16 rows tall. To scroll the whole display, run:
+        @note   To scroll the whole display, run:
         @code{.cpp}
-        ssd1306 ecran;
-        ecran.startscrolldiagleft(0x00, 0x0F);
+        #include "ssd1306.h"
+
+        int main(){
+            ssd1306 ecran;
+            ecran.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS); // switchvcc should be SSD1306_SWITCHCAPVCC = (0x2)
+            ecran.display();
+            ecran.startscrolldiagleft(0x00, 0x0F);
+            ecran.display();
+
+            return 0;
+        }
         @endcode
     */
     void startscrolldiagleft(unsigned int start, unsigned int stop);
@@ -501,7 +549,6 @@ public:
      * \param __y int
      * \param __h int
      * \param color unsigned int
-     *
      */
     void drawFastVLineInternal(int x, int __y, int __h, unsigned int color);
     /*!
@@ -562,7 +609,7 @@ public:
      * \brief setTextSize
      * \param s int
      *
-     * \details Permet de modifier la taille du texte.
+     * Permet de modifier la taille du texte.
      * \pre Méthode à executer avant d'executer une méthode d'écriture :
      * \code{.cpp}
      * ssd1306 ecran;
@@ -577,7 +624,7 @@ public:
      * \param str char*
      *
      * Permet de dessiner une chaine de caractère sur l'écran.
-     * \warning Utiliser la méthode ssd1306::display() pour afficher la chaine de caractère.
+     * \warning Utiliser la méthode ssd1306::display() pour afficher la chaine de caractère après l'utilisation de la méthode.
      */
     void drawString(char* str);
     /*!
@@ -587,8 +634,8 @@ public:
      * \param c int
      * \param color int
      * \param size int
-     * \details Permet de dessiner une chaine de caractère sur l'écran.
-     * \warning Utiliser la méthode ssd1306::display() pour afficher le caractère.
+     * Permet de dessiner une chaine de caractère sur l'écran.
+     * \warning Utiliser la méthode ssd1306::display() pour afficher le caractère après l'utilisation de la méthode.
      */
     void drawChar(int x, int y, unsigned char c, int color, int size);
 
@@ -601,7 +648,7 @@ public:
      * #include "capteurs.h"
      *
      * ssd1306 ecran;
-     * //Capteurs::capteur(double vitesseVent, double poidsAir, double luminosite, double temperature, double humidite);
+     * //Constructeur du capteur : Capteurs::capteur(double vitesseVent, double poidsAir, double luminosite, double temperature, double humidite);
      * Capteurs capteur(9.15, 6.3, 56.8, 28.00, 65.7);
      * ecran.ecrireValeurEcran(Capteurs::Luminosite, capteur);
      * ecran.display();

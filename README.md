@@ -19,7 +19,7 @@ Le PC en réseau recevra une image en .ppm et une trame au format "$TRACQ,x.x,y.
 ***
 
 # Aire Rapace Project
-Aire Rapace Project done at Jean Perrin high schoo in Marseille (France) during the second year of the Higher Technician's Certificate in Digital System, Computer and Network Option.
+Aire Rapace Project done at Jean Perrin high schoo in Marseille (France) during the second year of the Associate Degree in Digital System, Computer and Network Option.
 
 ## Use
 To use the project, you'll need a RaspberryPi with the last Qt5's version installed, a RaspiCam (the camera used in the project is findable [here](https://www.raspberrypi.org/products/camera-module-v2/) and the raspicam Library that you can find [here](https://github.com/cedricve/raspicam).

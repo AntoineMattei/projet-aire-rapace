@@ -1,0 +1,4 @@
+#ifndef CONNEXION_MYSQL_H
+#define CONNEXION_MYSQL_H
+
+#endif // CONNEXION_MYSQL_H

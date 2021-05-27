@@ -1,4 +1,0 @@
-#ifndef CONNEXION_SQL_H
-#define CONNEXION_SQL_H
-
-#endif // CONNEXION_SQL_H

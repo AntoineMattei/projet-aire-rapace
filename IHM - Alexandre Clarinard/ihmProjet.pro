@@ -16,21 +16,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    graphe.cpp \
-    image.cpp \
     main.cpp \
     mainwindow.cpp \
     qcustomplot.cpp
 
 HEADERS += \
-    graphe.h \
-    image.h \
     mainwindow.h \
     qcustomplot.h
 
 FORMS += \
-    graphe.ui \
-    image.ui \
     mainwindow.ui
 
 # Default rules for deployment.

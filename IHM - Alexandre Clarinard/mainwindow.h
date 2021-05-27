@@ -83,9 +83,6 @@ private slots:
 
 
     /*GRAPHE IHM*/
-
-    void on_btn_clear_clicked();
-
     void on_pushButton_3_clicked();
 
 private:
@@ -106,7 +103,6 @@ private:
     QList<QTcpSocket*>  _sockets;
     QList<QTcpSocket*>  _sockets_image;
 
-    /*TEST DE LA MORT*/
     QDate date;
     float temp,vit,hum,lum,poids;
     int chrono;

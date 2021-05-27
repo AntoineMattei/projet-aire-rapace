@@ -6,6 +6,7 @@
 #include <QTcpServer>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
+#include <QFile>
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
@@ -17,8 +18,10 @@
 
 #include "capteurs.h"
 #include "ssd1306.h"
+
 using namespace std;
 using namespace raspicam;
+
 QT_USE_NAMESPACE
 
 int main(int argc, char *argv[])
@@ -29,7 +32,6 @@ int main(int argc, char *argv[])
     QByteArray toSend;
 
     QRandomGenerator aleatoire;
-
 
     printf("Heure :\n");
 
@@ -74,7 +76,6 @@ int main(int argc, char *argv[])
     // Liaison série
 
     // On recherche les différentes interfaces RS232
-
 
     foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         qDebug() << "Available ports :";
@@ -199,78 +200,82 @@ int main(int argc, char *argv[])
     // --------------------SOCKET---------------------
     // -----------------------------------------------
 
-    QString addr_Serveur;
     string addr_Serveur_String;
-    cin >> addr_Serveur_String;
-    addr_Serveur.fromStdString(addr_Serveur_String);
-    QTcpSocket socket;
+        cout << "Entrez l'adresse du serveur : ";
+        cin >> addr_Serveur_String;
+        cout << "Adresse séléctionnée : " << addr_Serveur_String << endl;
+        QString truc;
+        QString addr_Serveur = truc.fromStdString(addr_Serveur_String);
+        QTcpSocket socket;
 
-    // ------------------- Image ---------------------
-    socket.connectToHost(addr_Serveur,4242);
+        // ------------------- Image ---------------------
+        socket.connectToHost(addr_Serveur,4243);
 
-    socket.waitForConnected();
+        socket.waitForConnected();
 
-    if(socket.state() != QAbstractSocket::ConnectedState){
-        qDebug() << "Etat lors de l'arrêt du programme : " << socket.state();
-        qDebug() << socket.errorString();
-    }
-    else{
-        qDebug() << "Connected ! State : " << socket.state();
-        socket.waitForReadyRead();
-        if(socket.isReadable()){
-            QByteArray donneesEntrees = socket.readAll();
-            cout << donneesEntrees.toStdString();
-            ifstream image_entree("/home/pi/raspicam_image.ppm", std::ifstream::binary);
+        if(socket.state() != QAbstractSocket::ConnectedState){
+            qDebug() << "Etat lors de l'arrêt du programme : " << socket.state();
+            qDebug() << socket.errorString();
+        }
+        else{
+            qDebug() << "Connected ! State : " << socket.state();
+            socket.waitForReadyRead();
+            if(socket.isReadable()){
+                QByteArray donneesEntrees = socket.readAll();
+                cout << donneesEntrees.toStdString();
+                ifstream image_entree("/home/pi/raspicam_image.ppm", std::ifstream::binary);
 
-            if(image_entree){
-                image_entree.seekg(0, image_entree.end);
-                int length = static_cast<int>(image_entree.tellg());
-                image_entree.seekg(0,image_entree.beg);
+                if(image_entree){
+                    image_entree.seekg(0, image_entree.end);
+                    int length = static_cast<int>(image_entree.tellg());
+                    image_entree.seekg(0,image_entree.beg);
 
-                char *buffer = new char[static_cast<unsigned int>(length)];
-                cout << "Lecture de l'image. Taille : " << length << endl;
-                image_entree.read(buffer, length);
-                socket.write(buffer, length);
+                    char *buffer = new char[static_cast<unsigned int>(length)];
+                    cout << "Lecture de l'image. Taille : " << length << endl;
+                    image_entree.read(buffer, length);
+                    socket.write(buffer, length);
 
-                delete [] buffer;
+                    delete [] buffer;
+                }
+
+                image_entree.close();
             }
-
-            image_entree.close();
         }
-    }
-    sleep(1);
-    while (socket.state() != QAbstractSocket::UnconnectedState) {
-        socket.disconnectFromHost();
-        socket.waitForDisconnected();
-    }
-
-    // ------------------- Trame ---------------------
-
-    sleep(20);
-    socket.connectToHost(addr_Serveur,4242);
-
-    socket.waitForConnected();
-
-    if(socket.state() != QAbstractSocket::ConnectedState){
-        qDebug() << "Etat lors de l'arrêt du programme : " << socket.state();
-        qDebug() << socket.errorString();
-    }
-    else{
-        qDebug() << "Connected ! State : " << socket.state();
-        socket.waitForReadyRead();
-        if(socket.isReadable()){
-            toSend.append(dateHeureToSend.toUtf8() + ",*");
-            cout << toSend.toStdString() << endl;
-
-            socket.write(toSend);
+        sleep(1);
+        while (socket.state() != QAbstractSocket::UnconnectedState) {
+            socket.disconnectFromHost();
+            socket.waitForDisconnected();
         }
-    }
 
-    sleep(1);
-    while (socket.state() != QAbstractSocket::UnconnectedState) {
-        socket.disconnectFromHost();
-        socket.waitForDisconnected();
-    }
+        // ------------------- Trame ---------------------
+
+        sleep(20);
+        socket.connectToHost(addr_Serveur,4242);
+
+        socket.waitForConnected();
+
+        if(socket.state() != QAbstractSocket::ConnectedState){
+            qDebug() << "Etat lors de l'arrêt du programme : " << socket.state();
+            qDebug() << socket.errorString();
+        }
+        else{
+            qDebug() << "Connected ! State : " << socket.state();
+            socket.waitForReadyRead();
+            if(socket.isReadable()){
+                toSend.append(dateHeureToSend.toUtf8() + ",*");
+                cout << toSend.toStdString() << endl;
+
+                socket.write(toSend);
+            }
+        }
+
+        sleep(1);
+        while (socket.state() != QAbstractSocket::UnconnectedState) {
+            socket.disconnectFromHost();
+            socket.waitForDisconnected();
+        }
+
+        QFile::remove("/home/pi/raspicam_image.ppm");
 
     qDebug() << "Fin du programme";
     return 0;

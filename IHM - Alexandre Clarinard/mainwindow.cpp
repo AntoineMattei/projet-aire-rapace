@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&_server_image, SIGNAL(newConnection()), this, SLOT(onNewConnection_image()));
     qDebug() << "Serveur TCP image   : " << _server_image.serverAddress().toString() << " au port : " << _server_image.serverPort();
 
-    /*TESTS CONNECT BDD*/
+    /*CONNECT BDD*/
     bdd();
 
     /*LABEL IP*/
@@ -73,16 +73,6 @@ MainWindow::~MainWindow()
 }
 
 /*HORLOGE IHM*/
-void MainWindow::heure()
-{
-
-    QTime time;
-    QString heure_string;
-    //while(1){
-        heure_string = time.currentTime().toString("hh:mm:ss");
-        ui->heure->setText(heure_string);
-    //}
-}
 
 void MainWindow::UpdateTime()
 {
@@ -90,13 +80,6 @@ void MainWindow::UpdateTime()
 }
 
 /*GRAPHE IHM*/
-
-void MainWindow::on_btn_clear_clicked()
-{
-    clearData();
-    plot();
-}
-
 void MainWindow::addPoint_constructeur(double x, double y){
     qv_x.append(x);
     qv_y.append(y);
@@ -142,15 +125,6 @@ void MainWindow::bdd()
         // Exécution d'une requête
         QSqlQuery requete;
 
-        /*TEST ULTIME DE LA MORT MOUHAHAHA*/
-        /*requete.prepare("INSERT INTO mesures (date,temperature,vitesse_vent,humidite,luminosite,poids_aire)"
-                        "VALUES (:newDate,:newTemp,:newVit,:newHum,:newLum,newPoids)");
-        requete.bindValue(":newDate",date);
-        requete.bindValue(":newTemp",temp);
-        requete.bindValue(":newVit",vit);
-        requete.bindValue(":newHum",hum);
-        requete.bindValue(":newLum",lum);
-        requete.bindValue(":newPoids",poids);*/
         if(requete.exec("SELECT * FROM mesures")) {
             qDebug() << "Ok - requete";
 
@@ -301,11 +275,11 @@ void MainWindow::onReadyRead_image()
     cout << datas.size() << endl;
 
     if(check_image){
-        QFile::remove("C:/Users/alexa/Pictures/image_recue.ppm");
+        QFile::remove("F:/Documents/1. Cours/BTS SN IR 2/Informatique/Projet/Aire Rapace Github/projet-aire-rapace/Imageimage_recue.ppmimage_recue.ppm");
         check_image=0;
     }
     //image caméra
-    QFile image("C:/Users/alexa/Pictures/image_recue.ppm");
+    QFile image("F:/Documents/1. Cours/BTS SN IR 2/Informatique/Projet/Aire Rapace Github/projet-aire-rapace/Imageimage_recue.ppm");
     image.open(QIODevice::ReadWrite | QIODevice::Append);
     image.write(datas);
     //image.close();
@@ -320,6 +294,6 @@ void MainWindow::onReadyRead_image()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    QFile::remove("C:/Users/alexa/Pictures/image.png");
+    QFile::remove("F:/Documents/1. Cours/BTS SN IR 2/Informatique/Projet/Aire Rapace Github/projet-aire-rapace/Imageimage_recue.ppm");
     close();
 }

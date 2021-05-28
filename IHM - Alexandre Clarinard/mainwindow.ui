@@ -207,7 +207,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="label_pds_aire">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -269,7 +269,7 @@
    <zorder>widgetGraphe</zorder>
    <zorder>heure</zorder>
    <zorder>label</zorder>
-   <zorder>label_4</zorder>
+   <zorder>label_pds_aire</zorder>
    <zorder>pushButton_3</zorder>
    <zorder>label_image</zorder>
    <zorder>label_IP</zorder>

@@ -14,7 +14,6 @@
 #include <string.h>
 #include <ctime>
 #include <raspicam/raspicam.h>
-#include <QRandomGenerator>
 
 #include "capteurs.h"
 #include "ssd1306.h"
@@ -28,8 +27,6 @@ int main(int argc, char *argv[])
 
     QStringList liste_trame;
     QByteArray toSend;
-
-    QRandomGenerator aleatoire;
 
     printf("Heure :\n");
 
